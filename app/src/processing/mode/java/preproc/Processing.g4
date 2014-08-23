@@ -114,15 +114,19 @@ expression
 // catch special API function calls that we are interested in
 apiFunction
     :   apiSizeFunction
+    |   apiSmoothFunction
     ;
 
 apiSizeFunction
     : 'size' '(' expression ',' expression ( ',' expression )? ')'
     ;
     
+apiSmoothFunction
+    : 'smooth' '(' expression ')'
+    ;
+    
 memberDeclaration
     :   methodDeclaration
-    |   apiMethodDeclaration
     |   genericMethodDeclaration
     |   fieldDeclaration
     |   constructorDeclaration
@@ -131,14 +135,6 @@ memberDeclaration
     |   annotationTypeDeclaration
     |   classDeclaration
     |   enumDeclaration
-    ;
-    
-apiMethodDeclaration
-    :   (type|'void') ('sketchWidth' | 'sketchHeight' | 'sketchRenderer') '(' ')'  ('[' ']')*
-        ('throws' qualifiedNameList)?
-        (   methodBody
-        |   ';'
-        )
     ;
 
 // these are primitive type names plus "()"
