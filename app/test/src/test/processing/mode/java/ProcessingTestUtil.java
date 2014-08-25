@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
-import antlr.ANTLRException;
 import processing.app.Base;
 import processing.app.Preferences;
 import processing.app.SketchException;
@@ -36,10 +35,10 @@ public class ProcessingTestUtil {
   }
 
   static String preprocess(final String name, final File resource)
-      throws SketchException, ANTLRException {
+      throws SketchException {
     final String program = read(resource);
     final StringWriter out = new StringWriter();
-    new PdePreprocessor(name, 4).write(out, program);
+    new PdePreprocessor(name, 4, true).write(out, program);
     return normalize(out);
   }
   

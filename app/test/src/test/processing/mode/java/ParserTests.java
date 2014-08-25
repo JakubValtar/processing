@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import processing.app.SketchException;
 import processing.app.exec.ProcessResult;
-import antlr.RecognitionException;
+import org.antlr.v4.runtime.RecognitionException;
 
 public class ParserTests {
 

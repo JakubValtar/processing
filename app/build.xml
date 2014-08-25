@@ -9,11 +9,7 @@
 	    value="${basedir}/src/processing/mode/java/preproc" />
 
   <property name="antlrjar" 
-	    value="${basedir}/lib/antlr.jar" />
-
-  <classloader taskname="antlr">
-    <classpath path="lib/antlr.jar" />
-  </classloader>
+	    value="${basedir}/lib/antlr-4.4-complete.jar" />
 
   <target name="clean" description="Clean the build directories">
     <delete dir="bin" />
@@ -31,15 +27,16 @@
   </target>
 
 <!--<target name="preproc" depends="clean" description="Compile ANTLR grammar">-->
-  <target name="preproc" description="Compile ANTLR grammar">
-    <antlr target="${grammars}/java15.g" outputdirectory="${generated}">
+  <target name="preproc" description="Compile ANTLR 4 grammar">
+    <java classname="org.antlr.v4.Tool"
+        failonerror="true">
       <classpath path="${antlrjar}" />
-    </antlr>
-    <antlr target="${grammars}/pde.g" 
-	   outputdirectory="${generated}" 
-	   glib="${grammars}/java15.g">
-      <classpath path="${antlrjar}" />
-    </antlr>
+      <arg value="-o" />
+      <arg value="${generated}" />
+      <arg value="-package" />
+      <arg value="processing.mode.java.preproc" />
+      <arg value="${grammars}/Processing.g4" />
+    </java>
   </target>
 
   <target name="compile" depends="preproc" description="Compile sources">
@@ -72,7 +69,7 @@
 	   excludes="**/tools/format/**" 
 	   encoding="UTF-8" 
 	   includeAntRuntime="false" 
-	   classpath="../core/library/core.jar; lib/ant.jar; lib/ant-launcher.jar; lib/antlr.jar; lib/apple.jar; lib/jdt-core.jar; lib/jna.jar; lib/org-netbeans-swing-outline.jar;lib/com.ibm.icu_4.4.2.v20110823.jar;lib/jdi.jar;lib/jdimodel.jar;lib/org.eclipse.osgi_3.8.1.v20120830-144521.jar"
+	   classpath="../core/library/core.jar; lib/ant.jar; lib/ant-launcher.jar; lib/antlr-4.4-complete.jar; lib/apple.jar; lib/jdt-core.jar; lib/jna.jar; lib/org-netbeans-swing-outline.jar;lib/com.ibm.icu_4.4.2.v20110823.jar;lib/jdi.jar;lib/jdimodel.jar;lib/org.eclipse.osgi_3.8.1.v20120830-144521.jar"
 	   debug="on"
 	   nowarn="true"
 	   compiler="org.eclipse.jdt.core.JDTCompilerAdapter">
