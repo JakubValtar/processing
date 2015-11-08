@@ -326,28 +326,55 @@ public class PJOGL extends PGL {
     // of the default framebuffer (the screen) contains the previous frame:
     // https://www.opengl.org/wiki/Default_Framebuffer
     // so it is copied to the front texture of the FBO layer:
+    boolean hasReadBuffer = hasReadBuffer();
+    boolean hasDrawBuffer = hasDrawBuffer();
+
+    PApplet.println("I",
+                    "rb:", hasReadBuffer,
+                    "db:", hasDrawBuffer,
+                    "fc:", sketch.frameCount,
+                    "pclc:", pclearColor,
+                    "pgc:", pgeomCount,
+                    "lp:", sketch.isLooping());
+
+    bindFramebufferImpl(DRAW_FRAMEBUFFER, glColorFbo.get(0));
+    framebufferTexture2D(FRAMEBUFFER, COLOR_ATTACHMENT0,
+                         TEXTURE_2D, glColorTex.get(frontTex), 0);
+    if (hasDrawBuffer) drawBuffer(COLOR_ATTACHMENT0);
+
+    bindFramebufferImpl(READ_FRAMEBUFFER, 0);
     if (pclearColor || 0 < pgeomCount || !sketch.isLooping()) {
-      if (hasReadBuffer()) readBuffer(FRONT);
+      if (hasReadBuffer) readBuffer(FRONT);
     } else {
       // ...except when the previous frame has not been cleared and nothing was
       // rendered while looping. In this case the back buffer, which holds the
       // initial state of the previous frame, still contains the most up-to-date
       // screen state.
-      readBuffer(BACK);
+      if (hasReadBuffer) readBuffer(BACK);
     }
-    bindFramebufferImpl(DRAW_FRAMEBUFFER, glColorFbo.get(0));
-    framebufferTexture2D(FRAMEBUFFER, COLOR_ATTACHMENT0,
-                         TEXTURE_2D, glColorTex.get(frontTex), 0);
-    if (hasDrawBuffer()) drawBuffer(COLOR_ATTACHMENT0);
+
+    PApplet.println("B",
+                    "r:", checkFramebufferStatus(READ_FRAMEBUFFER),
+                    "d:", checkFramebufferStatus(DRAW_FRAMEBUFFER),
+                    "e:", getError());
+
     blitFramebuffer(0, 0, fboWidth, fboHeight,
                     0, 0, fboWidth, fboHeight,
                     COLOR_BUFFER_BIT, NEAREST);
 
-    readBuffer(BACK);
     bindFramebufferImpl(DRAW_FRAMEBUFFER, glColorFbo.get(0));
     framebufferTexture2D(FRAMEBUFFER, COLOR_ATTACHMENT0,
                          TEXTURE_2D, glColorTex.get(backTex), 0);
-    drawBuffer(COLOR_ATTACHMENT0);
+    if (hasDrawBuffer) drawBuffer(COLOR_ATTACHMENT0);
+
+    bindFramebufferImpl(READ_FRAMEBUFFER, 0);
+    if (hasReadBuffer) readBuffer(BACK);
+
+    PApplet.println("F",
+                    "r:", checkFramebufferStatus(READ_FRAMEBUFFER),
+                    "d:", checkFramebufferStatus(DRAW_FRAMEBUFFER),
+                    "e:", getError());
+
     blitFramebuffer(0, 0, fboWidth, fboHeight,
                     0, 0, fboWidth, fboHeight,
                     COLOR_BUFFER_BIT, NEAREST);
